@@ -2,6 +2,7 @@ Munin-Plugin-Graph
 ==================
 
 [![Build Status](https://travis-ci.org/darac/Munin-Plugin-Graph.svg?branch=master)](https://travis-ci.org/darac/Munin-Plugin-Graph)
+[![codecov](https://codecov.io/gh/darac/Munin-Plugin-Graph/branch/master/graph/badge.svg)](https://codecov.io/gh/darac/Munin-Plugin-Graph)
 
 The README is used to introduce the module and provide instructions on
 how to install the module, any machine dependencies it may have (for
