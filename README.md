@@ -20,10 +20,10 @@ INSTALLATION
 
 To install this module, run the following commands:
 
-> perl Makefile.PL
-> make
-> make test
-> make install
+	perl Makefile.PL
+	make
+	make test
+	make install
 
 SUPPORT AND DOCUMENTATION
 -------------------------
@@ -31,21 +31,17 @@ SUPPORT AND DOCUMENTATION
 After installing, you can find documentation for this module with the
 perldoc command.
 
-> perldoc Munin::Plugin::Graph
+	perldoc Munin::Plugin::Graph
 
 You can also look for information at:
 
-    RT, CPAN's request tracker (report bugs here)
-        http://rt.cpan.org/NoAuth/Bugs.html?Dist=Munin-Plugin-Graph
+ * [RT, CPAN's request tracker (report bugs here)](http://rt.cpan.org/NoAuth/Bugs.html?Dist=Munin-Plugin-Graph)
 
-    AnnoCPAN, Annotated CPAN documentation
-        http://annocpan.org/dist/Munin-Plugin-Graph
+ * [AnnoCPAN, Annotated CPAN documentation](http://annocpan.org/dist/Munin-Plugin-Graph)
 
-    CPAN Ratings
-        http://cpanratings.perl.org/d/Munin-Plugin-Graph
+ * [CPAN Ratings](http://cpanratings.perl.org/d/Munin-Plugin-Graph)
 
-    Search CPAN
-        http://search.cpan.org/dist/Munin-Plugin-Graph/
+ * [Search CPAN](http://search.cpan.org/dist/Munin-Plugin-Graph/)
 
 
 LICENSE AND COPYRIGHT
