@@ -14,3 +14,7 @@ script:
 after_success:
   - cover -report codecov
   - bash <(curl -s https://codecov.io/bash)
+
+install:
+  - perl Build.PL
+  - ./Build installdeps
