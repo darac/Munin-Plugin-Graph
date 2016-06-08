@@ -17,4 +17,4 @@ after_success:
 
 install:
   - perl Build.PL
-  - ./Build installdeps
+  - ./Build installdeps --cpan_client 'cpanm --quiet --notest'
