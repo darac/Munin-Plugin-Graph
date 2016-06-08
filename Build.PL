@@ -14,10 +14,12 @@ my $builder = Module::Build->new(
     },
     build_requires => {
         'Test::More' => 0,
+		'Test::Output' => 0,
+		'Test::Exception' => 0,
     },
     requires => {
-        #'ABC'              => 1.6,
-        #'Foo::Bar::Module' => 5.0401,
+		'Moo' => 0,
+		'Type::Tiny' => 0,
     },
     add_to_cleanup     => [ 'Munin-Plugin-Graph-*' ],
     create_makefile_pl => 'traditional',
