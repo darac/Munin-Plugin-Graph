@@ -6,14 +6,14 @@ use Test::More;
 use Test::Output;	# To capture STDOUT
 use Test::Exception;
 
-plan tests => 21;
+plan tests => 52;
 
 require_ok('Munin::Plugin::Graph');
 
 my $graph_name = 'testing';
 
 # Create a simple object
-my $graph = new_ok( 'Munin::Plugin::Graph::Graph' => [ $graph_name ] );
+my $graph = new_ok( 'Munin::Plugin::Graph::Graph' => [ graph_title => $graph_name ] );
 
 my %fields = (
 		# field            old value      new value
@@ -31,23 +31,23 @@ my %fields = (
 		graph_vlabel   => [undef,        'vlabel'],
 		graph_width    => [undef,        '100'],
 		host_name      => [undef,        'foo.example.com'],
-		multigraph     => [undef,        'multigraph'],
+#		multigraph     => [undef,        'multigraph'],
 		update         => [undef,        'no'],
 		update_rate    => [undef,        '15'],
 );
 
 my $config_output = "";
-my $fetch_output = "";
+my $fetch_output = "\n";
 
 for my $field (sort keys %fields) {
-	my ($old_value, $new_value) = $fields{$field};
+	my ($old_value, $new_value) = @{$fields{$field}};
 	is ($graph->$field,             $old_value, "$field initial value");
 	ok ($graph->$field($new_value),             "Setting new value for $field");
 	is ($graph->$field,             $new_value, "$field new value");
 	$config_output .= "$field $new_value\n";
 }
 
-stdout_is ( \&{$graph->emit_config},  $config_output, "config output");
-stdout_is ( \&{$graph->emit_fetch},   $fetch_output,  "fetch output");
+stdout_is ( sub {$graph->emit_config},  $config_output, "config output");
+stdout_is ( sub {$graph->emit_fetch},   $fetch_output,  "fetch output");
 
 #ENd

@@ -5,14 +5,14 @@ use warnings;
 use Test::More;
 use Test::Output;	# To capture STDOUT
 
-plan tests => 21;
+plan tests => 38;
 
 require_ok('Munin::Plugin::Graph');
 
 my $graph_name = 'testing';
 
 # Create a simple object
-my $graph = new_ok( 'Munin::Plugin::Graph::Graph' => [ $graph_name ] );
+my $graph = new_ok( 'Munin::Plugin::Graph::Graph' => [ graph_title => $graph_name ] );
 
 my %attributes = (
 	graph          => undef,
@@ -29,7 +29,7 @@ my %attributes = (
 	graph_vlabel   => undef,
 	graph_width    => undef,
 	host_name      => undef,
-	multigraph     => undef,
+#	multigraph     => undef,
 	update         => undef,
 	update_rate    => undef,
 );
@@ -42,9 +42,9 @@ for my $f (sort keys %attributes){
 
 # Also check the non-attribute functions
 can_ok ($graph, 'emit_config');
-stdout_is ( \&{$graph->emit_config}, "graph_title $graph_name\n", "Default config output");
+stdout_is ( sub {$graph->emit_config}, "graph_title $graph_name\n", "Default config output");
 
 can_ok ($graph, 'emit_fetch');
-stdout_is ( \&{$graph->emit_fetch},  "\n", "Default fetch output");
+stdout_is ( sub {$graph->emit_fetch},  "\n", "Default fetch output");
 
 #ENd

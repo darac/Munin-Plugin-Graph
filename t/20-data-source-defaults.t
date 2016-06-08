@@ -5,14 +5,14 @@ use warnings;
 use Test::More;
 use Test::Output;	# To capture STDOUT
 
-plan tests => 21;
+plan tests => 42;
 
 require_ok('Munin::Plugin::Graph');
 
 my $ds_name = 'testing';
 
 # Create a simple object
-my $ds = new_ok( 'Munin::Plugin::Graph::DS' => [ $ds_name ] );
+my $ds = new_ok( 'Munin::Plugin::Graph::DS' => [ fieldname => $ds_name ] );
 
 my %attributes = (
 	fieldname => $ds_name,
@@ -41,9 +41,9 @@ for my $f (sort keys %attributes) {
 	is ($ds->$f, $attributes{$f}, "Default $f");
 }
 
-can_ok    ( $ds,                   'emit_config');
-stdout_is ( \&{$ds->emit_config},  "\n",                    "Default config output");
-can_ok    ( $ds,                   'emit_fetch');
-stdout_is ( \&{$ds->emit_fetch},   "${ds_name}.value U\n",  "Default fetch output");
+can_ok    ( $ds,                     'emit_config');
+stdout_is ( sub {$ds->emit_config},  "",                      "Default config output");
+can_ok    ( $ds,                     'emit_fetch');
+stdout_is ( sub {$ds->emit_fetch},   "${ds_name}.value U\n",  "Default fetch output");
 
-#ENd
+#End

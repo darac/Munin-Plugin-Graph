@@ -6,14 +6,14 @@ use Test::More;
 use Test::Output;	# To capture STDOUT
 use Test::Exception;
 
-plan tests => 21;
+plan tests => 58;
 
 require_ok('Munin::Plugin::Graph');
 
 my $ds_name = 'testing';
 
 # Create a simple object
-my $ds = new_ok( 'Munin::Plugin::Graph::DS' => [ $ds_name ] );
+my $ds = new_ok( 'Munin::Plugin::Graph::DS' => [ fieldname => $ds_name ] );
 
 my %fields = (
 		# field       old value   new value
@@ -25,7 +25,7 @@ my %fields = (
 		extinfo   => [undef,     'Some extra info'],
 		graph     => [undef,     'no'],
 		info      => [undef,     'Some info'],
-		label     => [undef,     "A label"],
+		label     => [undef,     "a label"],
 		line      => [undef,     '23'],
 		max       => [undef,     '100'],
 		min       => [undef,     '1'],
@@ -40,7 +40,7 @@ my %fields = (
 my $config_output = "";
 my $fetch_output = "";
 for my $field (sort keys %fields) {
-	my ($old_value, $new_value) = $fields{$field};
+	my ($old_value, $new_value) = @{$fields{$field}};
 	if ($field eq 'fieldname') {
 		# This field should be read-only
 		is      ($ds->$field,             $old_value, "$field initial value");
@@ -58,10 +58,7 @@ for my $field (sort keys %fields) {
 	}
 }
 
-TODO {
-	local $TODO = "functions don't exist yet";
-	stdout_is ( \&{$ds->emit_config},  $config_output, "config output");
-	stdout_is ( \&{$ds->emit_fetch},   $fetch_output,  "fetch output");
-}
+stdout_is ( sub {$ds->emit_config},  $config_output, "config output");
+stdout_is ( sub {$ds->emit_fetch},   $fetch_output,  "fetch output");
 
 #ENd

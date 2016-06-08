@@ -4,6 +4,10 @@ use 5.006;
 use strict;
 use warnings;
 
+use Munin::Plugin::Graph::Graph;
+use Munin::Plugin::Graph::DS;
+#use Munin::Plugin::Graph::MultiGraph;
+
 =head1 NAME
 
 Munin::Plugin::Graph - The great new Munin::Plugin::Graph!
@@ -48,6 +52,8 @@ sub function1 {
 
 sub function2 {
 }
+
+1;
 
 =head1 AUTHOR
 
