@@ -1,3 +1,7 @@
+# Backups
+*~
+*.bak
+
 Makefile
 Makefile.old
 Build

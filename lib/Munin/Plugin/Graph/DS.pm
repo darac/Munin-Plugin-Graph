@@ -8,8 +8,9 @@ use Munin::Plugin::Graph::types -all;
 has 'fieldname' => (
 	is        => 'ro',
 	isa       => ValidFieldName,
-	coerce    => ValidFieldName->coercion,
+	coerce    => FieldNameFromStr,
 	predicate => 1,
+	required  => 1,
 );
 	
 
@@ -21,13 +22,14 @@ has 'cdef' => (
 
 has 'colour' => (
 	is        => 'rw',
-	isa       => Maybe[HexStr],
+	isa       => HexStr | Undef,
+	coerce    => HexStrFromStr,
 	predicate => 1,
 );
 
 has [qw(critical warning)] => (
 	is        => 'rw',
-	isa       => Maybe[Num],
+	isa       => WarnCritType | Undef,
 	predicate => 1,
 );
 
@@ -45,7 +47,8 @@ has [qw(info extinfo)] => (
 
 has 'graph' => (
 	is        => 'rw',
-	isa       => Maybe[WordyBool],
+	isa       => WordyBool,
+	coerce    => WordyBoolFromStr,
 	predicate => 1,
 );
 
@@ -59,6 +62,7 @@ has 'label' => (
 has 'line' => (
 	is        => 'rw',
 	isa       => Maybe[LineType],
+	coerce    => 1,
 	predicate => 1,
 );
 
@@ -88,7 +92,8 @@ has 'type' => (
 
 has 'value' => (
 	is        => 'rw',
-	isa       => ValueType | ArrayRef[SpoolType],
+	isa       => ValueType->plus_coercions(ValueFromUndef) | ArrayRef[SpoolType],
+	coerce    => 1,
 	predicate => 1,
 	default   => 'U',
 );
