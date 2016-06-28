@@ -17,6 +17,7 @@ my $builder = Module::Build->new(
         'Test::More' => 0,
 		'Test::Output' => 0,
 		'Test::Exception' => 0,
+		'YAML::XS' => 0,
     },
     requires => {
 		'Moo' => 0,
