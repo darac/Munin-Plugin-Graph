@@ -10,7 +10,13 @@ declare "LowerStr", as Str,
 	inline_as { my $varname = $_[1]; "lc($varname) eq $varname and not $varname =~ /\\s/" };
 coerce "LowerStr", from Str, q{lc $_};
 
+declare "DS", as InstanceOf["Munin::Plugin::Graph::DS"];
+
 declare "StrOrDS", as Str | InstanceOf["Munin::Plugin::Graph::DS"];
+
+declare "Graph", as InstanceOf["Munin::Plugin::Graph::BaseGraph"];
+
+declare "StrOrGraph", as Str | InstanceOf["Munin::Plugin::Graph::BaseGraph"];
 
 declare "ValidFieldName",
 	as 		  Str,

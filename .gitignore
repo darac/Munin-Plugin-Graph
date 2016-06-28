@@ -1,6 +1,7 @@
 # Backups
 *~
 *.bak
+*.swp
 
 Makefile
 Makefile.old

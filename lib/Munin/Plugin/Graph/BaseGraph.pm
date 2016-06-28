@@ -1,9 +1,11 @@
 package Munin::Plugin::Graph::BaseGraph;
 
+use v5.10;
 use Moo;
 use strictures 2;
 use namespace::clean;
 use Munin::Plugin::Graph::types -all;
+use Type::Params qw(compile);
 
 has 'graph' => (
 	is        => 'rw',
@@ -102,8 +104,15 @@ has 'update_rate' => (
 	predicate => 1,
 );
 
+has 'data_sources' => (
+	is        => 'rwp',
+	isa       => ArrayRef[DS],
+	predicate => 1,
+);
+
 sub emit_config {
-	my $self = shift;
+	state $paramscheck = compile ( Object );
+	my ($self) = $paramscheck->(@_);
 	if (!$self->has_graph_title) {
 		die "Can't configure a graph without a title";
 	} else {
@@ -113,13 +122,87 @@ sub emit_config {
 			print "$attr " . Str->($self->$attr) . "\n" if defined $self->$attr;
 		}
 	}
+	if ($self->has_data_sources) {
+		for my $ds (@{$self->data_sources}) {
+			DS->validate($ds);
+			$ds->emit_config;
+		}
+	}
 }
 
 sub emit_fetch {
-	my $self = shift;
+	state $paramscheck = compile (Object);
+	my ($self) = $paramscheck->(@_);
 
 	# Nothing to do during the fetch stage
 	print "\n";
+	if ($self->has_data_sources) {
+		for my $ds (@{$self->data_sources}) {
+			DS->validate($ds);
+			$ds->emit_fetch;
+		}
+	}
+}
+
+sub add_DS {
+	state $paramscheck = compile (Object, ArrayRef[StrOrDS] | StrOrDS);
+	my ($self, @args) = $paramscheck->(@_);
+
+	my @items_added = ();
+	
+	for my $item (@args){
+		if (DS->check($item)) {
+			# Argument is a DS, so we can add that
+			# First, check if there's an existing DS by this name
+			if (defined ($self->get_DS_by_name($item->fieldname))) {
+				die "Cannot add DS " . $item->fieldname . ". Fieldnames must be unique";
+			}
+			DS->assert_valid($item);
+			if ($self->has_data_sources) {
+				push @{$self->data_sources}, $item;
+			} else {
+				$self->_set_data_sources([$item]);
+			}
+			push @items_added, $item;
+		} elsif (Str->check($item)) {
+			# Argument is a string. Start by seeing if we can find an existing DS by that name
+			if (defined(my $newDS = $self->get_DS_by_name($item))) {
+				die "Cannot add DS $item. Fieldnames must be unique";
+			} else {
+				my $added = new Munin::Plugin::Graph::DS(fieldname => $item);
+				if ($self->has_data_sources) {
+					push @{$self->data_sources}, $added;
+				} else {
+					$self->_set_data_sources([$added]);
+				}
+				push @items_added, $added;
+			}
+		}
+	}
+
+	return @items_added;
+}
+
+sub delete_DS {
+	state $paramscheck = compile (Object, DS);
+	my ($self, $needle) = $paramscheck->(@_);
+
+	$self->_set_data_sources(grep {$_ != $needle} $self->data_sources);
+}
+
+sub get_DS_by_name {
+	state $paramscheck = compile (Object, Str);
+	my ($self, $name) = $paramscheck->(@_);
+
+	return unless $self->has_data_sources;
+
+	for my $ds (@{$self->data_sources}) {
+		DS->assert_valid($ds);
+		if ($ds->fieldname eq $name) {
+			return $ds;
+		}
+	}
+	return undef;
 }
 
 1;

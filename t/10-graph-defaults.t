@@ -48,4 +48,4 @@ stdout_is( sub { $graph->emit_config }, "graph_title $graph_name\n", "Default co
 can_ok( $graph, 'emit_fetch' );
 stdout_is( sub { $graph->emit_fetch }, "\n", "Default fetch output" );
 
-#ENd
+#End

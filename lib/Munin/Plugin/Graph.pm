@@ -6,7 +6,7 @@ use warnings;
 
 use Munin::Plugin::Graph::Graph;
 use Munin::Plugin::Graph::DS;
-#use Munin::Plugin::Graph::MultiGraph;
+use Munin::Plugin::Graph::MultiGraph;
 
 =head1 NAME
 
