@@ -39,19 +39,23 @@ if you don't export anything, such as for a purely object-oriented module.
 
 =head1 SUBROUTINES/METHODS
 
-=head2 function1
-
 =cut
 
-sub function1 {
+our %globals = (
+    DIRTYCONFIG => 0,
+    AUTOSAVE    => 0,
+);
+
+sub import {
+    my ( $package, %args ) = @_;
+
+    for my $feature ( keys %globals ) {
+        if ( defined $args{$feature} and $args{$feature} ) {
+            $globals{$feature} = 1;
+        }
+    }
 }
 
-=head2 function2
-
-=cut
-
-sub function2 {
-}
 
 1;
 
@@ -132,4 +136,4 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 =cut
 
-1; # End of Munin::Plugin::Graph
+1;    # End of Munin::Plugin::Graph
