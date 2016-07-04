@@ -220,7 +220,7 @@ sub get_DS_by_name {
 
 sub DEMOLISH {
     my ( $self, $in_global_destruction ) = @_;
-    if ( $globals{AUTOSAVE} ) {
+    if ( $Munin::Plugin::Graph::globals{AUTOSAVE} ) {
         #
     }
 }

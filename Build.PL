@@ -13,6 +13,11 @@ my $builder = Module::Build->subclass(
     dist_author        => q{Darac Marjal <darac@darac.org.uk>},
     dist_version_from  => 'lib/Munin/Plugin/Graph.pm',
     release_status     => 'stable',
+	meta_merge         => {
+		resources => {
+			repository => 'https://github.com/darac/Munin-Plugin-Graph',
+		},
+	},
     configure_requires => {
         'Module::Build' => 0,
     },
