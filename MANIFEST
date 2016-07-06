@@ -22,3 +22,6 @@ t/manifest.t
 t/pod-coverage.t
 t/pod.t
 xt/boilerplate.t
+Makefile.PL
+META.yml
+META.json

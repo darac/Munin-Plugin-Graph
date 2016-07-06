@@ -34,12 +34,12 @@ This class represents a Munin Graph. All attributes are implemented using Getter
 =cut
 
 has 'name' => (
-	is => 'rw',
-	isa => Str,
-	default => sub {
-		$0 =~ /([^\/\\\.])\.?[^.]*/;
-		return $1;
-	},
+    is      => 'rw',
+    isa     => Str,
+    default => sub {
+        $0 =~ /([^\/\\\.])\.?[^.]*/;
+        return $1;
+    },
 );
 
 =item C<graph>
@@ -62,7 +62,7 @@ has 'graph' => (
 =cut
 
 has 'graph_args' => (
-    is => 'rw',
+    is        => 'rw',
     isa       => StringList,
     coerce    => StrFromList,
     predicate => 1,
@@ -253,28 +253,28 @@ Print, to STDOUT, the configuration of this graph. This will also call C<emit_co
 sub emit_config {
     state $paramscheck = compile(Object);
     my ($self) = $paramscheck->(@_);
-	for my $attr (
-		qw( graph graph_args graph_category graph_height graph_info graph_order
-		graph_period graph_printf graph_scale graph_title graph_total graph_vlabel
-		graph_width host_name update update_rate)
-	  ) {
-		print "$attr " . Str->( $self->$attr ) . "\n" if defined $self->$attr;
-	}
+    for my $attr (
+        qw( graph graph_args graph_category graph_height graph_info graph_order
+        graph_period graph_printf graph_scale graph_title graph_total graph_vlabel
+        graph_width host_name update update_rate)
+      ) {
+        print "$attr " . Str->( $self->$attr ) . "\n" if defined $self->$attr;
+    }
     if ( $self->has_data_sources ) {
         for my $ds ( @{ $self->data_sources } ) {
             DS->validate($ds);
             $ds->emit_config;
 
-			# If the node tells use it can do DIRTYCONFIG *and*
-			#  the module was loaded with DIRTYCONFIG wanted,
-			#  then do emit_fetch for this DS, too.
+            # If the node tells use it can do DIRTYCONFIG *and*
+            #  the module was loaded with DIRTYCONFIG wanted,
+            #  then do emit_fetch for this DS, too.
 
-			if ($Munin::Plugin::Graph::globals{DIRTYCONFIG} and
-				exists $ENV{MUNIN_CAP_DIRTYCONFIG} and
-				$ENV{MUNIN_CAP_DIRTYCONFIG} eq 1) {
-		
-				$ds->emit_fetch;
-			}
+            if (    $Munin::Plugin::Graph::globals{DIRTYCONFIG}
+                and exists $ENV{MUNIN_CAP_DIRTYCONFIG}
+                and $ENV{MUNIN_CAP_DIRTYCONFIG} eq 1 ) {
+
+                $ds->emit_fetch;
+            }
         }
     }
 }

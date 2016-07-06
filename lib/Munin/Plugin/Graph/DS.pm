@@ -35,13 +35,13 @@ This class represents a Munin Data Source. All attributes are implemented using 
 =cut
 
 has 'fieldname' => (
-	is        => 'ro',
-	isa       => ValidFieldName,
-	coerce    => FieldNameFromStr,
-	predicate => 1,
-	required  => 1,
+    is        => 'ro',
+    isa       => ValidFieldName,
+    coerce    => FieldNameFromStr,
+    predicate => 1,
+    required  => 1,
 );
-	
+
 =item C<cdef>
 
 (Optional) Used to modify the value before graphing. See also: L<http://oss.oetiker.ch/rrdtool/tut/cdeftutorial.en.html>
@@ -49,9 +49,9 @@ has 'fieldname' => (
 =cut
 
 has 'cdef' => (
-	is        => 'rw',
-	isa       => Maybe[Str],
-	predicate => 1,
+    is        => 'rw',
+    isa       => Maybe [Str],
+    predicate => 1,
 );
 
 =item C<colour>
@@ -61,10 +61,10 @@ has 'cdef' => (
 =cut
 
 has 'colour' => (
-	is        => 'rw',
-	isa       => HexStr | Undef,
-	coerce    => HexStrFromStr,
-	predicate => 1,
+    is        => 'rw',
+    isa       => HexStr | Undef,
+    coerce    => HexStrFromStr,
+    predicate => 1,
 );
 
 =item C<critical>, C<warning>
@@ -74,9 +74,9 @@ has 'colour' => (
 =cut
 
 has [qw(critical warning)] => (
-	is        => 'rw',
-	isa       => WarnCritType | Undef,
-	predicate => 1,
+    is        => 'rw',
+    isa       => WarnCritType | Undef,
+    predicate => 1,
 );
 
 =item C<draw>
@@ -86,9 +86,9 @@ has [qw(critical warning)] => (
 =cut
 
 has 'draw' => (
-	is        => 'rw',
-	isa       => Maybe[DrawEnum],
-	predicate => 1,
+    is        => 'rw',
+    isa       => Maybe [DrawEnum],
+    predicate => 1,
 );
 
 =item C<info>, C<extinfo>
@@ -98,9 +98,9 @@ has 'draw' => (
 =cut
 
 has [qw(info extinfo)] => (
-	is        => 'rw',
-	isa       => Maybe[Str],
-	predicate => 1,
+    is        => 'rw',
+    isa       => Maybe [Str],
+    predicate => 1,
 );
 
 =item C<graph>
@@ -110,10 +110,10 @@ has [qw(info extinfo)] => (
 =cut
 
 has 'graph' => (
-	is        => 'rw',
-	isa       => WordyBool,
-	coerce    => WordyBoolFromStr,
-	predicate => 1,
+    is        => 'rw',
+    isa       => WordyBool,
+    coerce    => WordyBoolFromStr,
+    predicate => 1,
 );
 
 =item C<label>
@@ -123,10 +123,10 @@ has 'graph' => (
 =cut
 
 has 'label' => (
-	is        => 'rw',
-	isa       => Maybe[LowerStr],
-	coercion  => LowerStr->coercion,
-	predicate => 1,
+    is        => 'rw',
+    isa       => Maybe [LowerStr],
+    coercion  => LowerStr->coercion,
+    predicate => 1,
 );
 
 =item C<line>
@@ -136,10 +136,10 @@ has 'label' => (
 =cut
 
 has 'line' => (
-	is        => 'rw',
-	isa       => Maybe[LineType],
-	coerce    => 1,
-	predicate => 1,
+    is        => 'rw',
+    isa       => Maybe [LineType],
+    coerce    => 1,
+    predicate => 1,
 );
 
 =item C<min>, C<max>
@@ -149,9 +149,9 @@ has 'line' => (
 =cut
 
 has [qw(min max)] => (
-	is        => 'rw',
-	isa       => Maybe[Num],
-	predicate => 1,
+    is        => 'rw',
+    isa       => Maybe [Num],
+    predicate => 1,
 );
 
 =item C<negative>
@@ -161,9 +161,9 @@ has [qw(min max)] => (
 =cut
 
 has 'negative' => (
-	is        => 'rw',
-	isa       => Maybe[StrOrDS],
-	predicate => 1,
+    is        => 'rw',
+    isa       => Maybe [StrOrDS],
+    predicate => 1,
 );
 
 =item C<stack>
@@ -177,9 +177,9 @@ has 'negative' => (
 =cut
 
 has [qw(stack sum)] => (
-	is        => 'rw',
-	isa       => Maybe[ArrayRef[StrOrDS] | StrOrDS],
-	predicate => 1,
+    is        => 'rw',
+    isa       => Maybe [ ArrayRef [StrOrDS] | StrOrDS ],
+    predicate => 1,
 );
 
 =item C<type>
@@ -189,9 +189,9 @@ has [qw(stack sum)] => (
 =cut
 
 has 'type' => (
-	is        => 'rw',
-	isa       => Maybe[Enum[qw(GAUGE COUNTER DERIVE ABSOLUTE)]],
-	predicate => 1,
+    is        => 'rw',
+    isa       => Maybe [ Enum [qw(GAUGE COUNTER DERIVE ABSOLUTE)] ],
+    predicate => 1,
 );
 
 =item C<value>
@@ -201,11 +201,11 @@ has 'type' => (
 =cut
 
 has 'value' => (
-	is        => 'rw',
-	isa       => ValueType->plus_coercions(ValueFromUndef) | ArrayRef[SpoolType],
-	coerce    => 1,
-	predicate => 1,
-	default   => 'U',
+    is        => 'rw',
+    isa       => ValueType->plus_coercions(ValueFromUndef) | ArrayRef [SpoolType],
+    coerce    => 1,
+    predicate => 1,
+    default   => 'U',
 );
 
 =back
@@ -221,12 +221,14 @@ Print, to STDOUT, the configuration of this Data Source.
 =cut
 
 sub emit_config {
-	my $self = shift;
+    my $self = shift;
 
-	for my $attr (sort qw( cdef colour critical warning draw info extinfo
-		                   graph label line min max negative stack sum type )) {
-		print $self->fieldname . ".$attr " . $self->$attr . "\n" if defined $self->$attr;
-	}
+    for my $attr (
+        sort qw( cdef colour critical warning draw info extinfo
+        graph label line min max negative stack sum type )
+      ) {
+        print $self->fieldname . ".$attr " . $self->$attr . "\n" if defined $self->$attr;
+    }
 }
 
 =item C<emit_fetch>
@@ -236,15 +238,16 @@ Print, to STDOUT, the value of this Data Source.
 =cut
 
 sub emit_fetch {
-	my $self = shift;
+    my $self = shift;
 
-	if (ArrayRef->check($self->value)) {
-		for my $datum (@{$self->value}) {
-			print $self->fieldname . ".value $datum\n";
-		}
-	} else {
-		print $self->fieldname . ".value " . $self->value . "\n";
-	}
+    if ( ArrayRef->check( $self->value ) ) {
+        for my $datum ( @{ $self->value } ) {
+            print $self->fieldname . ".value $datum\n";
+        }
+    }
+    else {
+        print $self->fieldname . ".value " . $self->value . "\n";
+    }
 }
 
 =back
