@@ -51,19 +51,23 @@ widgets.value 123
 multigraph multi.t
 EOF
 
-dies_ok( sub { $multigraph->emit_config() }, "Can't emit_config without CAP_MULTIGRAPH");
-dies_ok( sub { $multigraph->emit_fetch() }, "Can't emit_fetch without CAP_MULTIGRAPH");
+dies_ok( sub { $multigraph->emit_config() }, "Can't emit_config without CAP_MULTIGRAPH" );
+dies_ok( sub { $multigraph->emit_fetch() },  "Can't emit_fetch without CAP_MULTIGRAPH" );
 
 $ENV{MUNIN_CAP_MULTIGRAPH} = 1;
-stdout_is( sub{ $multigraph->emit_config() }, $expected_config, "Can emit_config with CAP_MULTIGRAPH") || diag explain $multigraph->emit_config;
-stdout_is( sub{ $multigraph->emit_fetch() }, $expected_fetch, "Can emit_fetch with CAP_MULTIGRAPH") || diag explain $multigraph->emit_fetch;
+stdout_is( sub { $multigraph->emit_config() },
+    $expected_config, "Can emit_config with CAP_MULTIGRAPH" )
+  || diag explain $multigraph->emit_config;
+stdout_is( sub { $multigraph->emit_fetch() },
+    $expected_fetch, "Can emit_fetch with CAP_MULTIGRAPH" )
+  || diag explain $multigraph->emit_fetch;
 
 
 # For coverage
-is($multigraph->get_graph_by_title($subgraph->graph_title), $subgraph, "Can retrieve by title");
-is($multigraph->get_graph_by_name($subgraph->name), $subgraph, "Can retrieve by name");
+is( $multigraph->get_graph_by_title( $subgraph->graph_title ), $subgraph, "Can retrieve by title" );
+is( $multigraph->get_graph_by_name( $subgraph->name ),         $subgraph, "Can retrieve by name" );
 
-ok($multigraph->delete_graph($subgraph), "Can Delete graphs");
+ok( $multigraph->delete_graph($subgraph), "Can Delete graphs" );
 
 
 done_testing();
