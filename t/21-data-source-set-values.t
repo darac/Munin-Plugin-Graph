@@ -67,13 +67,13 @@ stdout_is( sub { $ds->emit_config }, $config_output, "config output" );
 stdout_is( sub { $ds->emit_fetch },  $fetch_output,  "fetch output" );
 
 # For coverage
-ok($ds->value(["12345:12", "12350:U", "12355:13.5"]), "Adding Timestamped Values");
+ok( $ds->value( [ "12345:12", "12350:U", "12355:13.5" ] ), "Adding Timestamped Values" );
 
 $fetch_output = <<EOF;
 $ds_name.value 12345:12
 $ds_name.value 12350:U
 $ds_name.value 12355:13.5
 EOF
-stdout_is( sub { $ds->emit_fetch },  $fetch_output,  "fetch output" );
+stdout_is( sub { $ds->emit_fetch }, $fetch_output, "fetch output" );
 
 #End

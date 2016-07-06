@@ -7,7 +7,7 @@ use Test::Output;    # To capture STDOUT
 use Test::Exception;
 eval 'use Test::More::Color';
 
-plan tests => 17;
+plan tests => 16;
 
 require_ok('Munin::Plugin::Graph');
 

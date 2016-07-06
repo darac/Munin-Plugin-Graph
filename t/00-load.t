@@ -8,7 +8,7 @@ eval 'use Test::More::Color';
 plan tests => 1;
 
 BEGIN {
-    use_ok( 'Munin::Plugin::Graph' ) || print "Bail out!\n";
+    use_ok('Munin::Plugin::Graph') || print "Bail out!\n";
 }
 
-diag( "Testing Munin::Plugin::Graph $Munin::Plugin::Graph::VERSION, Perl $], $^X" );
+diag("Testing Munin::Plugin::Graph $Munin::Plugin::Graph::VERSION, Perl $], $^X");
