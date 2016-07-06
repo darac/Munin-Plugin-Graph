@@ -3,7 +3,6 @@ Changes
 MANIFEST			This list of files
 META.json
 META.yml
-Makefile.PL
 README.md
 lib/Munin/Plugin/Graph.pm
 lib/Munin/Plugin/Graph/BaseGraph.pm

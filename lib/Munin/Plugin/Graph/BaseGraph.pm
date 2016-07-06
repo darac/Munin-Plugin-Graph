@@ -9,7 +9,7 @@ use Type::Params qw(compile);
 use File::Basename;
 
 use lib $ENV{'MUNIN_LIBDIR'} // '.';
-use Munin::Plugin;
+eval 'require Munin::Plugin';
 
 =head1 NAME
 
