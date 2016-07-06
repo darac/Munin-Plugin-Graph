@@ -66,13 +66,9 @@ sub add_graph {
 					die "Cannot add graph $item. Graph name must be unique";
 				}
 			}
-			if (defined(my $testgraph = $self->get_graph_by_name($newgraph->name))) {
-				die "Cannot add Graph $item. Graph name must be unique";
-			} else {
-				Graph->assert_valid($newgraph);
-				push @{$self->graphs}, $newgraph;
-				push @items_added, $newgraph;
-			}
+			Graph->assert_valid($newgraph);
+			push @{$self->graphs}, $newgraph;
+			push @items_added, $newgraph;
 		} else {
 			# Argument is a Graph, so we can add that
 			# First, check if there's an existing Graph
