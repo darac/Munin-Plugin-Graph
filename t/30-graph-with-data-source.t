@@ -57,6 +57,13 @@ dies_ok( sub { $graph->add_DS($ds) }, "Can't add two DS's with the same fieldnam
 $dup = new_ok( 'Munin::Plugin::Graph::DS' => [ fieldname => "other" ] );
 ok( $graph->add_DS($dup), "Add Second DS" );
 
+# For coverage
+my $dup = new_ok('Munin::Plugin::Graph::DS' => [fieldname => $ds->fieldname]);
+dies_ok(sub { $graph->add_DS($ds) }, "Can't add two DS's with the same fieldname");
+
+$dup = new_ok('Munin::Plugin::Graph::DS' => [fieldname => "other"]);
+ok($graph->add_DS($dup), "Add Second DS");
+
 done_testing();
 
 #End
