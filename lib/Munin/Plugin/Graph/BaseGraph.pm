@@ -253,18 +253,13 @@ Print, to STDOUT, the configuration of this graph. This will also call C<emit_co
 sub emit_config {
     state $paramscheck = compile(Object);
     my ($self) = $paramscheck->(@_);
-    if ( !$self->has_graph_title ) {
-        die "Can't configure a graph without a title";
-    }
-    else {
-        for my $attr (
-            qw( graph graph_args graph_category graph_height graph_info graph_order
-            graph_period graph_printf graph_scale graph_title graph_total graph_vlabel
-            graph_width host_name update update_rate)
-          ) {
-            print "$attr " . Str->( $self->$attr ) . "\n" if defined $self->$attr;
-        }
-    }
+	for my $attr (
+		qw( graph graph_args graph_category graph_height graph_info graph_order
+		graph_period graph_printf graph_scale graph_title graph_total graph_vlabel
+		graph_width host_name update update_rate)
+	  ) {
+		print "$attr " . Str->( $self->$attr ) . "\n" if defined $self->$attr;
+	}
     if ( $self->has_data_sources ) {
         for my $ds ( @{ $self->data_sources } ) {
             DS->validate($ds);

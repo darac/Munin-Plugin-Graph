@@ -93,7 +93,7 @@ my @test_matrix = ( {
         invalid_arguments => [123],
     }, {
         field             => 'value',
-        valid_arguments   => [ '123', '10.3', 'U' ],
+        valid_arguments   => [ '123', '10.3', 'U', ["12345:12", "12350:U", "12355:12.5"] ],
         mapped_arguments  => [ [ undef, 'U' ], ],
         invalid_arguments => ['some'],
     },
