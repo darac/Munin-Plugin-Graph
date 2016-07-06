@@ -58,10 +58,10 @@ sub add_graph {
 			# Argument is a string. Start by seeing if we can find an existing graph by that name
 			my $newgraph = new Munin::Plugin::Graph::Graph(graph_title => $item);
 			(my $altname = lc $item) =~ s/[^a-zA-Z0-9]/_/g;
-			if (defined (my $checkname = $self->get_graph_by_name($item))) {
+			if (defined (my $checkname = $self->get_graph_by_name($newgraph->name))) {
 				# There is a naming conflict,. so rename this one
 				$newgraph->name($altname);
-				if (defined (my $checkname = $self->get_graph_by_name($item))) {
+				if (defined (my $checkname = $self->get_graph_by_name($newgraph->name))) {
 					# There is STILL a conflict
 					die "Cannot add graph $item. Graph name must be unique";
 				}

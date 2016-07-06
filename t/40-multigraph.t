@@ -7,7 +7,7 @@ use Test::Output;    # To capture STDOUT
 use Test::Exception;
 eval 'use Test::More::Color';
 
-plan tests => 16;
+plan tests => 17;
 
 require_ok('Munin::Plugin::Graph');
 
@@ -28,7 +28,8 @@ can_ok( $multigraph, 'add_graph' );
 ok( $multigraph->add_graph($subgraph), "Adding existing graph to Multigraph" );
 dies_ok( sub { $multigraph->add_graph($subgraph) }, "Can't add existing graph a second time" );
 ok( $multigraph->add_graph("New"), "Adding new graph to Multigraph" );
-dies_ok( sub { $multigraph->add_graph("New") }, "Can't add graph a second time" );
+ok( $multigraph->add_graph("New"), "Adding second graph by string to Multigraph" );
+dies_ok( sub { $multigraph->add_graph("New") }, "Can't add graph third time" );
 
 my $expected_config = <<EOF;
 multigraph multi
@@ -38,6 +39,9 @@ multigraph multi.subgraph
 graph_title subgraph
 
 multigraph multi.t
+graph_title New
+
+multigraph multi.new
 graph_title New
 EOF
 
@@ -49,6 +53,8 @@ multigraph multi.subgraph
 widgets.value 123
 
 multigraph multi.t
+
+multigraph multi.new
 EOF
 
 dies_ok( sub { $multigraph->emit_config() }, "Can't emit_config without CAP_MULTIGRAPH" );
