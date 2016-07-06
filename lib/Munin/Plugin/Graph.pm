@@ -47,10 +47,11 @@ our %globals = (
 );
 
 sub import {
-    my ( $package, %args ) = @_;
+    my ( $package, @args ) = @_;
 
     for my $feature ( keys %globals ) {
-        if ( defined $args{$feature} and $args{$feature} ) {
+        if ( grep { $_ eq $feature} @args ) {
+			print "Enabling $feature\n";
             $globals{$feature} = 1;
         }
     }

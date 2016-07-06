@@ -22,15 +22,16 @@ my $builder = Module::Build->subclass(
         'Module::Build' => 0,
     },
     build_requires => {
-        'strictures'      => 2,
+        'Test::Exception' => 0,
         'Test::More'      => 0,
         'Test::Output'    => 0,
-        'Test::Exception' => 0,
         'YAML::XS'        => 0,
+        'strictures'      => 2,
     },
     requires => {
         'Moo'        => 0,
         'Type::Tiny' => 0,
+        'strictures' => 2,
     },
     add_to_cleanup     => ['Munin-Plugin-Graph-*'],
     create_makefile_pl => 'traditional',

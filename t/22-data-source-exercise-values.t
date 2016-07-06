@@ -5,6 +5,7 @@ use warnings;
 use Test::More;
 use Test::Output;    # To capture STDOUT
 use Test::Exception;
+eval 'use Test::More::Color';
 
 no warnings qw(uninitialized);
 

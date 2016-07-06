@@ -5,6 +5,12 @@ use Type::Utils -all;
 
 BEGIN { extends "Types::Standard" };
 
+=head1 NAME
+
+Munin::Plugin::Graph::types - Internal types used by Munin::Plugin::Graph
+
+=cut
+
 declare "LowerStr", as Str,
 	where	  { lc($_) eq $_ and not /\s/},
 	inline_as { my $varname = $_[1]; "lc($varname) eq $varname and not $varname =~ /\\s/" };

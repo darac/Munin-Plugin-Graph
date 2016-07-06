@@ -4,6 +4,7 @@ use strict;
 use warnings;
 use Test::More;
 use Test::Output;    # To capture STDOUT
+eval 'use Test::More::Color';
 
 plan tests => 38;
 
@@ -46,6 +47,6 @@ can_ok( $graph, 'emit_config' );
 stdout_is( sub { $graph->emit_config }, "graph_title $graph_name\n", "Default config output" );
 
 can_ok( $graph, 'emit_fetch' );
-stdout_is( sub { $graph->emit_fetch }, "\n", "Default fetch output" );
+stdout_is( sub { $graph->emit_fetch }, "", "Default fetch output" );
 
 #End

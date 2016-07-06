@@ -5,6 +5,7 @@ use warnings;
 use Test::More;
 use Test::Output;    # To capture STDOUT
 use YAML::XS;
+eval 'use Test::More::Color';
 
 require_ok('Munin::Plugin::Graph');
 

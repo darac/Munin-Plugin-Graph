@@ -4,6 +4,7 @@ use strict;
 use warnings;
 use Test::More;
 use Test::Output;    # To capture STDOUT
+eval 'use Test::More::Color';
 
 plan tests => 42;
 

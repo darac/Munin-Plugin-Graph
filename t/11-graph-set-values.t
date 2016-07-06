@@ -5,6 +5,7 @@ use warnings;
 use Test::More;
 use Test::Output;    # To capture STDOUT
 use Test::Exception;
+eval 'use Test::More::Color';
 
 plan tests => 52;
 
@@ -39,7 +40,7 @@ my %fields = (
 );
 
 my $config_output = "";
-my $fetch_output  = "\n";
+my $fetch_output  = "";
 
 for my $field ( sort keys %fields ) {
     my ( $old_value, $new_value ) = @{ $fields{$field} };

@@ -3,6 +3,7 @@ use 5.006;
 use strict;
 use warnings;
 use Test::More;
+eval 'use Test::More::Color';
 
 plan tests => 1;
 
