@@ -51,7 +51,6 @@ sub import {
 
     for my $feature ( keys %globals ) {
         if ( grep { $_ eq $feature} @args ) {
-			print "Enabling $feature\n";
             $globals{$feature} = 1;
         }
     }

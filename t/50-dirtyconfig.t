@@ -7,6 +7,8 @@ use Test::Output;    # To capture STDOUT
 use Test::Exception;
 eval 'use Test::More::Color';
 
+plan tests => 8;
+
 use Munin::Plugin::Graph;
 
 my $graph = new Munin::Plugin::Graph::Graph (graph_title => "Testing DirtyConfig", name => "dirtyconfig");

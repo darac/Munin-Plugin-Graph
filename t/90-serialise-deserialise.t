@@ -7,6 +7,8 @@ use Test::Output;    # To capture STDOUT
 use YAML::XS;
 eval 'use Test::More::Color';
 
+plan tests => 4;
+
 require_ok('Munin::Plugin::Graph');
 
 # Set up Item to serialise

@@ -56,19 +56,20 @@ sub add_graph {
 	for my $item (@args) {
 		if (Str->check($item)) {
 			# Argument is a string. Start by seeing if we can find an existing graph by that name
-			if (defined(my $newgraph = $self->get_graph_by_name($item))) {
+			my $newgraph = new Munin::Plugin::Graph::Graph(graph_title => $item);
+			(my $altname = lc $item) =~ s/[^a-zA-Z0-9]/_/g;
+			if (defined (my $checkname = $self->get_graph_by_name($item))) {
+				# There is a naming conflict,. so rename this one
+				$newgraph->name($altname);
+				if (defined (my $checkname = $self->get_graph_by_name($item))) {
+					# There is STILL a conflict
+					die "Cannot add graph $item. Graph name must be unique";
+				}
+			}
+			if (defined(my $testgraph = $self->get_graph_by_name($newgraph->name))) {
 				die "Cannot add Graph $item. Graph name must be unique";
 			} else {
-				my $newgraph = new Munin::Plugin::Graph::Graph(graph_title => $item);
-				(my $altname = lc $newgraph) =~ s/[^a-zA-Z0-9]/_/g;
-				if (defined (my $checkname = $self->get_graph_by_name($item))) {
-					# There is a naming conflict,. so rename this one
-					$newgraph->name($altname);
-					if (defined (my $checkname = $self->get_graph_by_name($item))) {
-						# There is STILL a conflict
-						die "Cannot add graph $item. Graph name must be unique";
-					}
-				}
+				Graph->assert_valid($newgraph);
 				push @{$self->graphs}, $newgraph;
 				push @items_added, $newgraph;
 			}
@@ -100,7 +101,8 @@ sub delete_graph {
 	state $paramscheck = compile (Object, Graph);
 	my ($self, $needle) = $paramscheck->(@_);
 
-	$self->_set_graphs(grep {$_ != $needle} $self->graphs);
+	my @newgraphs = grep {$_ != $needle} @{$self->graphs};
+	$self->_set_graphs(\@newgraphs);
 }
 
 =item C<get_graph_by_title>
@@ -116,7 +118,7 @@ sub get_graph_by_title {
 	return unless $self->has_graphs;
 
 	for my $graph (@{$self->graphs}) {
-		InstanceOf['Munin::Plugin::Graph::Graph']->assert_valid($graph);
+		Graph->assert_valid($graph);
 		if ($graph->graph_title eq $name) {
 			return $graph;
 		}
@@ -138,7 +140,7 @@ sub get_graph_by_name {
 	return unless $self->has_graphs;
 
 	for my $graph (@{$self->graphs}) {
-		InstanceOf['Munin::Plugin::Graph::Graph']->assert_valid($graph);
+		Graph->assert_valid($graph);
 		if ($graph->name eq $name) {
 			return $graph;
 		}
@@ -167,6 +169,7 @@ sub emit_config {
 	$self->SUPER::emit_config();
 
 	for my $g (@{$self->graphs}) {
+		Graph->assert_valid($g);
 		print "\nmultigraph " . $self->name . "." . $g->name . "\n";
 		$g->emit_config;
 	}

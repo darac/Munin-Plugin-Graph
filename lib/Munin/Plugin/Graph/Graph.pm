@@ -18,9 +18,9 @@ See L<Munin::Plugin::Graph::BaseGraph>
 =cut
 
 has 'parent' => (
-	is		  => 'rwp',
-	isa       => InstanceOf['Munin::Plugin::Graph::MultiGraph'],
-	predicate => 1,
+    is        => 'rwp',
+    isa       => InstanceOf ['Munin::Plugin::Graph::MultiGraph'],
+    predicate => 1,
 );
 
 1;

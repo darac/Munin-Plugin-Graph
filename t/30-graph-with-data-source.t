@@ -7,6 +7,8 @@ use Test::Output;    # To capture STDOUT
 use Test::Exception;
 eval 'use Test::More::Color';
 
+plan tests => 21;
+
 require_ok('Munin::Plugin::Graph');
 
 my $graph = new_ok( "Munin::Plugin::Graph::Graph" => [ graph_title => "testing" ] );
@@ -47,6 +49,13 @@ newDS.label blah
 EOF
 
 stdout_is( sub {$graph->emit_config}, $expected_out, "Graph Output includes DS");
+
+# For coverage
+my $dup = new_ok('Munin::Plugin::Graph::DS' => [fieldname => $ds->fieldname]);
+dies_ok(sub { $graph->add_DS($ds) }, "Can't add two DS's with the same fieldname");
+
+$dup = new_ok('Munin::Plugin::Graph::DS' => [fieldname => "other"]);
+ok($graph->add_DS($dup), "Add Second DS");
 
 done_testing();
 
