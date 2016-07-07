@@ -385,6 +385,22 @@ sub get_DS_by_name {
     return undef;
 }
 
+=item C<clear>
+
+Clears the value of all C<Munin::Plugin::Graph::DS>s attached. This is useful after serialisation/deserialisation.
+
+=cut
+
+sub clear {
+    state $paramscheck = compile(Object);
+    my ($self) = $paramscheck->(@_);
+
+    for my $ds ( @{ $self->data_sources } ) {
+        $ds->value('U');
+    }
+    return 1;
+}
+
 =back
 
 =cut

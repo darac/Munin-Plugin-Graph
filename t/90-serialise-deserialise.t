@@ -7,7 +7,7 @@ use Test::Output;    # To capture STDOUT
 use YAML::XS;
 eval 'use Test::More::Color';
 
-plan tests => 4;
+plan tests => 6;
 
 require_ok('Munin::Plugin::Graph');
 
@@ -25,6 +25,10 @@ ok( $ser = Dump($graph), "Graph can be dumped" );
 ok( my $newgraph = Load($ser), "Graph can be loaded" );
 
 is_deeply( $newgraph, $graph, "Deserialisation produces identical data" );
+
+ok( $newgraph->clear(), "Graph can be cleared" );
+
+is( $newgraph->get_DS_by_name("foo")->value(), 'U', "DS value has been cleared" );
 
 done_testing();
 
