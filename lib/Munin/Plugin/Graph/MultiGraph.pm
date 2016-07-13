@@ -169,11 +169,13 @@ sub emit_config {
     # Perform the BaseGraph emit_config
     $self->SUPER::emit_config();
 
-    for my $g ( @{ $self->graphs } ) {
-        Graph->assert_valid($g);
-        print "\nmultigraph " . $self->name . "." . $g->name . "\n";
-        $g->emit_config;
-    }
+	if ($self->has_graphs) {
+	    for my $g ( @{ $self->graphs } ) {
+	        Graph->assert_valid($g);
+	        print "\nmultigraph " . $self->name . "." . $g->name . "\n";
+	        $g->emit_config;
+	    }
+	}
 }
 
 =item C<emit_fetch>
@@ -195,10 +197,12 @@ sub emit_fetch {
     # Perform the BaseGraph emit_config
     $self->SUPER::emit_fetch();
 
-    for my $g ( @{ $self->graphs } ) {
-        print "\nmultigraph " . $self->name . "." . $g->name . "\n";
-        $g->emit_fetch();
-    }
+	if ($self->has_graphs) {
+	    for my $g ( @{ $self->graphs } ) {
+	        print "\nmultigraph " . $self->name . "." . $g->name . "\n";
+	        $g->emit_fetch();
+	    }
+	}
 }
 
 =back
