@@ -395,9 +395,11 @@ sub clear {
     state $paramscheck = compile(Object);
     my ($self) = $paramscheck->(@_);
 
-    for my $ds ( @{ $self->data_sources } ) {
-        $ds->value('U');
-    }
+	if ($self->has_data_sources) {
+	    for my $ds ( @{ $self->data_sources } ) {
+	        $ds->value('U');
+	    }
+	}
     return 1;
 }
 
