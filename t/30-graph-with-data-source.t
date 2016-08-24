@@ -7,7 +7,7 @@ use Test::Output;    # To capture STDOUT
 use Test::Exception;
 eval 'use Test::More::Color';
 
-plan tests => 21;
+plan tests => 22;
 
 require_ok('Munin::Plugin::Graph');
 
@@ -40,6 +40,7 @@ can_ok( $graph, "delete_DS" );
 $graph->add_DS("DeleteMe");
 my $deleteme = $graph->get_DS_by_name("DeleteMe");
 ok( $graph->delete_DS($deleteme), "Can delete DS" );
+is( $graph->get_DS_by_name("DeleteMe"), undef, "Deleted DS has gone");
 
 my $expected_out = <<EOF;
 graph_title testing

@@ -4,6 +4,7 @@ use Moo;
 use strictures 2;
 use namespace::clean;
 use Munin::Plugin::Graph::types -all;
+use DateTime;
 
 =head1 NAME
 
@@ -207,6 +208,19 @@ has 'value' => (
     predicate => 1,
     default   => 'U',
 );
+
+has 'last_update' => (
+	is        => 'rwp',
+	isa       => TimeDate,
+	predicate => 1,
+	default   => sub { DateTime->from_epoch(epoch => 0) },
+);
+
+after value => sub {
+	my ($self, $orig) = @_;
+
+	$self->_set_last_update(DateTime->now());
+};
 
 =back
 

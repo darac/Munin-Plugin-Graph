@@ -360,8 +360,10 @@ Remove an attached C<Munin::Plugin::Graph::DS> from this graph.
 sub delete_DS {
     state $paramscheck = compile( Object, DS );
     my ( $self, $needle ) = $paramscheck->(@_);
+	
+	my @arr = grep { $_ != $needle } @{ $self->data_sources };
 
-    $self->_set_data_sources( grep { $_ != $needle } $self->data_sources );
+    $self->_set_data_sources( \@arr );
 }
 
 =item C<get_DS_by_name>
@@ -374,7 +376,7 @@ sub get_DS_by_name {
     state $paramscheck = compile( Object, Str );
     my ( $self, $name ) = $paramscheck->(@_);
 
-    return unless $self->has_data_sources;
+    return undef unless $self->has_data_sources;
 
     for my $ds ( @{ $self->data_sources } ) {
         DS->assert_valid($ds);
@@ -401,6 +403,35 @@ sub clear {
 	    }
 	}
     return 1;
+}
+
+=item C<expire>
+
+Expire old, accumulated C<Munin::Plugin::Graph::DS>s. Takes a C<DateTime::Duration> object (default two weeks), and deletes all C<DS>s not updating in that time.
+
+=cut
+
+sub expire {
+	state $paramscheck = compile( Object, Optional[InstanceOf['DateTime::Duration']] );
+	my ($self, $duration) = $paramscheck->(@_);
+
+	my @todelete;
+
+	$duration = $duration // DateTime::Duration->new(weeks => 2);
+
+	if ($self->has_data_sources) {
+		for my $ds ( @{ $self->data_sources } ) {
+			if ($ds->last_update + $duration <= DateTime->now()) {
+				push @todelete, $ds; 	# Stack them here, so we don't screw up the loop
+			}
+		}
+	}
+
+	foreach (@todelete) {
+		$self->delete_DS($_);
+	}
+
+	return 1;
 }
 
 =back

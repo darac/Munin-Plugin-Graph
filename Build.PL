@@ -32,6 +32,7 @@ my $builder = Module::Build->subclass(
         'Moo'        => 0,
         'Type::Tiny' => 0,
         'strictures' => 2,
+		'DateTime'   => 1.36,
     },
     add_to_cleanup     => ['Munin-Plugin-Graph-*'],
     create_makefile_pl => 'traditional',
