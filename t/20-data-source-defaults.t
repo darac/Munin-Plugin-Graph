@@ -24,7 +24,7 @@ my %attributes = (
     extinfo   => undef,
     graph     => undef,
     info      => undef,
-    label     => undef,
+    label     => $ds_name,
     line      => undef,
     max       => undef,
     min       => undef,
@@ -43,7 +43,7 @@ for my $f ( sort keys %attributes ) {
 }
 
 can_ok( $ds, 'emit_config' );
-stdout_is( sub { $ds->emit_config }, "", "Default config output" );
+stdout_is( sub { $ds->emit_config }, "${ds_name}.label ${ds_name}\n", "Default config output" );
 can_ok( $ds, 'emit_fetch' );
 stdout_is( sub { $ds->emit_fetch }, "${ds_name}.value U\n", "Default fetch output" );
 

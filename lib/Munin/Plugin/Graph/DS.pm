@@ -125,9 +125,9 @@ has 'graph' => (
 
 has 'label' => (
     is        => 'rw',
-    isa       => Maybe [LowerStr],
-    coercion  => LowerStr->coercion,
+    isa       => Label,
     predicate => 1,
+    default   => sub { my $self = shift; return $self->fieldname },
 );
 
 =item C<line>
@@ -210,16 +210,16 @@ has 'value' => (
 );
 
 has 'last_update' => (
-	is        => 'rwp',
-	isa       => TimeDate,
-	predicate => 1,
-	default   => sub { DateTime->from_epoch(epoch => 0) },
+    is        => 'rwp',
+    isa       => TimeDate,
+    predicate => 1,
+    default   => sub { DateTime->from_epoch( epoch => 0 ) },
 );
 
 after value => sub {
-	my ($self, $orig) = @_;
+    my ( $self, $orig ) = @_;
 
-	$self->_set_last_update(DateTime->now());
+    $self->_set_last_update( DateTime->now() );
 };
 
 =back

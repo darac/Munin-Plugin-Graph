@@ -49,7 +49,9 @@ declare "NonNegative", as Int, where { $_ >= 0 };
 
 declare "WarnCritType", as StrMatch [qr{^\d*:\d*$}];
 
-declare "TimeDate", as InstanceOf["DateTime"];
+declare "TimeDate", as InstanceOf ["DateTime"];
+
+declare "Label", as Str, where { $_ !~ /[#\\]/ };
 
 declare_coercion "WordyBoolFromStr", to_type WordyBool, from Str, via {
     return "no"  if /^(0|false|off|disabled|no|)$/i;

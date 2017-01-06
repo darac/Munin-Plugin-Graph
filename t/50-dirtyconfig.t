@@ -23,6 +23,7 @@ $DS->value(12);
 my $clean_config = <<EOF;
 graph_title Testing DirtyConfig
 widgets.draw LINE1
+widgets.label widgets
 EOF
 
 my $clean_fetch = <<EOF;
@@ -32,6 +33,7 @@ EOF
 my $dirty_config = <<EOF;
 graph_title Testing DirtyConfig
 widgets.draw LINE1
+widgets.label widgets
 widgets.value 12
 EOF
 

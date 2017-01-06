@@ -24,8 +24,8 @@ $subgraph->add_DS($DS);
 
 $DS->value(123);
 
-can_ok( $multigraph, "get_graph_by_title");
-is( $multigraph->get_graph_by_title( "blahblah" ), undef, "Test get_graph_by_title with no graphs" );
+can_ok( $multigraph, "get_graph_by_title" );
+is( $multigraph->get_graph_by_title("blahblah"), undef, "Test get_graph_by_title with no graphs" );
 
 can_ok( $multigraph, 'add_graph' );
 ok( $multigraph->add_graph($subgraph), "Adding existing graph to Multigraph" );
@@ -37,9 +37,11 @@ dies_ok( sub { $multigraph->add_graph("New") }, "Can't add graph third time" );
 my $expected_config = <<EOF;
 multigraph multi
 graph_title Multigraph
+widgets.label widgets
 
 multigraph multi.subgraph
 graph_title subgraph
+widgets.label widgets
 
 multigraph multi.t
 graph_title New
@@ -74,7 +76,7 @@ stdout_is( sub { $multigraph->emit_fetch() },
 
 # For coverage
 is( $multigraph->get_graph_by_title( $subgraph->graph_title ), $subgraph, "Can retrieve by title" );
-is( $multigraph->get_graph_by_title( "blahblah" ), undef, "Can retrieve by title" );
+is( $multigraph->get_graph_by_title("blahblah"),               undef,     "Can retrieve by title" );
 is( $multigraph->get_graph_by_name( $subgraph->name ),         $subgraph, "Can retrieve by name" );
 
 ok( $multigraph->delete_graph($subgraph), "Can Delete graphs" );

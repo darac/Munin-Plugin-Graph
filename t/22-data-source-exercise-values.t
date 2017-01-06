@@ -60,9 +60,9 @@ my @test_matrix = ( {
         field           => 'info',
         valid_arguments => [ 'a string', '<b>html text</b>', '<invalid> some < test', undef ],
     }, {
-        field           => 'label',
-        valid_arguments => [ 'label', 'a_label', undef ],
-        invalid_arguments => [ 'Label', 'Label with spaces' ],
+        field             => 'label',
+        valid_arguments   => [ 'label', 'a_label', 'Label', 'Label with spaces' ],
+        invalid_arguments => [ undef, '#lolcat', '\\blah', 'C:\\Windows' ],
     }, {
         field             => 'line',
         valid_arguments   => [ '10.3', '10.3:abcdef', '10.3:abcdef:a_label', undef ],

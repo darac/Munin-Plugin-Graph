@@ -5,6 +5,7 @@ WriteMakefile
   'NAME' => 'Munin::Plugin::Graph',
   'VERSION_FROM' => 'lib/Munin/Plugin/Graph.pm',
   'PREREQ_PM' => {
+                   'DateTime' => '1.36',
                    'Moo' => 0,
                    'Test::Exception' => 0,
                    'Test::More' => 0,
