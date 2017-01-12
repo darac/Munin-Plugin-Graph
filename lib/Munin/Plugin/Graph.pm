@@ -8,6 +8,8 @@ use Munin::Plugin::Graph::Graph;
 use Munin::Plugin::Graph::DS;
 use Munin::Plugin::Graph::MultiGraph;
 
+require Exporter;
+
 =head1 NAME
 
 Munin::Plugin::Graph - The great new Munin::Plugin::Graph!
@@ -18,8 +20,7 @@ Version 0.05
 
 =cut
 
-our $VERSION = '0.05';
-
+our $VERSION = '0.10';
 
 =head1 SYNOPSIS
 
@@ -36,6 +37,36 @@ Perhaps a little code snippet.
 
 A list of functions that can be exported.  You can delete this section
 if you don't export anything, such as for a purely object-oriented module.
+
+=cut
+
+our @ISA = qw(Exporter);
+
+our %EXPORT_TAGS = (
+	'all' => [ qw (
+		find_graph_by_title
+		find_graph_by_name
+		find_subgraph_by_title
+		find_subgraph_by_name
+		create_graph
+		create_subgraph
+		create_ds
+		) ],
+	'finding' => [ qw (
+		find_graph_by_title
+		find_graph_by_name
+		find_subgraph_by_title
+		find_subgraph_by_name
+		) ],
+	'creating' => [ qw (
+		create_graph
+		create_subgraph
+		create_ds
+		) ],
+);
+
+our @EXPORT_OK = ( @{ $EXPORT_TAGS{'all'} } );
+
 
 =head1 SUBROUTINES/METHODS
 
@@ -56,6 +87,117 @@ sub import {
     }
 }
 
+sub find_by_title {
+	my ($haystack, $needle) = (@_);
+
+	sub _f {
+		my ($graph, $title) = (@_);
+
+	    if ( $graph->has_graphs ) {
+	        foreach my $g ( @{ $graph->graphs } ) {
+	            if ( $g->graph_title eq $title ) {
+	                return $g;
+	            }
+	        }
+	    }
+	    return undef;
+	}
+
+	if ($haystack->isa('Munin::Plugin::Graph::BaseGraph')) {
+		return _f($haystack, $needle);
+	} else {
+		for my $g ( @{ $haystack } ) {
+			my $n = _f($g, $needle);
+			return $n if defined $n;
+		}
+	}
+	return undef;
+}
+
+
+sub find_graph_by_title {
+	my ($coll, $title) = (@_);
+
+	return find_by_title($coll, $title);
+
+}
+
+sub find_graph_by_name {
+	my ($coll, $name) = (@_);
+
+	return find_by_name($coll, $name);
+
+}
+
+sub find_subgraph_by_title {
+	my ($graph, $title) = (@_);
+
+	return find_by_name ($graph, $title);
+
+}
+
+sub find_subgraph_by_name {
+	my ($graph, $name) = (@_);
+
+	return find_by_name($graph, $name);
+
+}
+
+sub create_graph {
+	my ($coll, %args) = @_;
+
+	if (!defined $args{graph_title} ) {
+		die ("Invalid call to create_args(): Missing attribute 'graph_title'");
+	}
+
+	my $graph = new Munin::Plugin::Graph::MultiGraph(%args);
+	my $other;
+
+	if ( defined( $other = find_graph_by_title( $coll, $graph->graph_title))) {
+		return $other;
+	} else {
+		push @{$coll}, $graph;
+		return $graph;
+	}
+}
+
+sub create_subgraph {
+	my ($graph, %args) = @_;
+
+    if ( !defined $args{graph_title} ) {
+        die( "Invalid call to create_subgraph(): Missing attribute 'graph_title'") ;
+    }
+
+    my $subgraph = new Munin::Plugin::Graph::Graph(%args);
+    my $other;
+
+    if ( defined( $other = find_subgraph_by_title( $graph, $subgraph->graph_title ) ) ) {
+        return $other;
+    }
+    else {
+        $graph->add_graph($subgraph);
+        return $subgraph;
+    }
+}
+
+sub create_ds {
+    my ( $g, %args ) = (@_);
+
+    if ( !defined $args{fieldname} ) {
+        die "Invalid call to create_ds: Missing attribute 'fieldname'" ;
+    }
+
+    my $ds = new Munin::Plugin::Graph::DS(%args);
+    my $other;
+
+    if ( defined( $other = $g->get_DS_by_name( $ds->fieldname ) ) ) {
+        return $other;
+    }
+    else {
+        $g->add_DS($ds);
+        return $ds;
+    }
+}
 
 1;
 
