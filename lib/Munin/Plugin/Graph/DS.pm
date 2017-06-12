@@ -219,7 +219,7 @@ has 'last_update' => (
 after value => sub {
     my ( $self, $orig ) = @_;
 
-    $self->_set_last_update( DateTime->now() );
+    $self->_set_last_update( DateTime->now() ) if defined $orig;
 };
 
 =back

@@ -1,8 +1,11 @@
 package Munin::Plugin::Graph;
 
-use 5.006;
-use strict;
-use warnings;
+use v5.10;
+use strictures 2;
+use namespace::clean;
+
+use Type::Params qw(compile);
+use Types::Standard qw(ArrayRef HashRef InstanceOf Str slurpy Dict);
 
 use Munin::Plugin::Graph::Graph;
 use Munin::Plugin::Graph::DS;
@@ -70,6 +73,8 @@ our @EXPORT_OK = ( @{ $EXPORT_TAGS{'all'} } );
 
 =head1 SUBROUTINES/METHODS
 
+=over 4
+
 =cut
 
 our %globals = (
@@ -87,10 +92,10 @@ sub import {
     }
 }
 
-sub find_by_title {
+sub _find_by_title {
 	my ($haystack, $needle) = (@_);
 
-	sub _f {
+	sub _t {
 		my ($graph, $title) = (@_);
 
 	    if ( $graph->has_graphs ) {
@@ -99,15 +104,51 @@ sub find_by_title {
 	                return $g;
 	            }
 	        }
+	    } else {
+			if ($graph->graph_title eq $title) {
+				return $graph;
+			}
 	    }
 	    return undef;
 	}
 
-	if ($haystack->isa('Munin::Plugin::Graph::BaseGraph')) {
-		return _f($haystack, $needle);
+	if ((InstanceOf['Munin::Plugin::Graph::BaseGraph'])->check($haystack)){
+		return _t($haystack, $needle);
 	} else {
 		for my $g ( @{ $haystack } ) {
-			my $n = _f($g, $needle);
+			my $n = _t($g, $needle);
+			return $n if defined $n;
+		}
+	}
+	return undef;
+}
+
+sub _find_by_name {
+	my ($haystack, $needle) = (@_);
+
+	sub _n {
+		state $paramscheck = compile (InstanceOf['Munin::Plugin::Graph::BaseGraph'], Str);
+		my ($graph, $name) = $paramscheck->(@_);
+
+	    if ( $graph->has_graphs ) {
+	        foreach my $g ( @{ $graph->graphs } ) {
+	            if ( $g->name eq $name ) {
+	                return $g;
+	            }
+	        }
+	    } else {
+			if ($graph->name eq $name) {
+				return $graph;
+			}
+		}
+	    return undef;
+	}
+
+	if ((InstanceOf['Munin::Plugin::Graph::BaseGraph'])->check($haystack)){
+		return _n($haystack, $needle);
+	} else {
+		for my $g ( @{ $haystack } ) {
+			my $n = _n($g, $needle);
 			return $n if defined $n;
 		}
 	}
@@ -115,42 +156,85 @@ sub find_by_title {
 }
 
 
-sub find_graph_by_title {
-	my ($coll, $title) = (@_);
+=item C<find_graph_by_title>
 
-	return find_by_title($coll, $title);
+Given an arrayref of C<Munin::Plugin::Graph>s and a title, return a reference to the graph with the given title. 
+
+=cut
+
+sub find_graph_by_title {
+	state $paramscheck = compile (ArrayRef[InstanceOf['Munin::Plugin::Graph::BaseGraph']], Str);
+	my ($coll, $title) = $paramscheck->(@_);
+
+	return _find_by_title($coll, $title);
 
 }
+
+=item C<find_graph_by_name>
+
+Given an arrayref of C<Munin::Plugin::Graph>s and a name, return a reference to the graph with the given name.
+
+=cut
 
 sub find_graph_by_name {
-	my ($coll, $name) = (@_);
+	state $paramscheck = compile (ArrayRef[InstanceOf['Munin::Plugin::Graph::BaseGraph']], Str);
+	my ($coll, $name) = $paramscheck->(@_);
 
-	return find_by_name($coll, $name);
+	return _find_by_name($coll, $name);
 
 }
+
+=item C<find_subgraph_by_title>
+
+Given a reference to a C<Munin::Plugin::Graph> and a title, return a reference to the subgraph with the given title.
+
+=cut
 
 sub find_subgraph_by_title {
-	my ($graph, $title) = (@_);
+	state $paramscheck = compile (InstanceOf['Munin::Plugin::Graph::BaseGraph'], Str);
+	my ($graph, $title) = $paramscheck->(@_);
 
-	return find_by_name ($graph, $title);
+	return _find_by_name ($graph, $title);
 
 }
+
+=item C<find_subgraph_by_name>
+
+Given a reference to a C<Munin::Plugin::Graph> and a name, return a reference to the subgraph with the given name.
+
+=cut
 
 sub find_subgraph_by_name {
-	my ($graph, $name) = (@_);
+	state $paramscheck = compile (InstanceOf['Munin::Plugin::Graph::BaseGraph'], Str);
+	my ($graph, $name) = $paramscheck->(@_);
 
-	return find_by_name($graph, $name);
+	return _find_by_name($graph, $name);
 
 }
 
-sub create_graph {
-	my ($coll, %args) = @_;
+=item C<create_graph>
 
-	if (!defined $args{graph_title} ) {
+A shorthand for creating a single instance of a graph.
+
+Given an arrayref of C<Munin::Plugin::Graph>s and a hashref of arguments, ensures that the specified graph exists in the array.
+
+This method scans the array for a graph with a matching title and, if one is found, returns that graph, otherwise adds the new graph to the array and returns the new graph.
+
+The intention here is that one would create graphs, save them, and re-load them at the start of the next run. By calling this function you don't need to worry about how many times your code creates the graph (perhaps because, during parsing the data, it's easier to create the graph several times). By saving and restoring the stack of graphs, you also have less likelihood of graphs disappearing because of missing data or parsing failures. Be sure to run C<clear()> on each graph, though, to remove values from the attacned C<Munin::Plugin::Graph::DS>es.
+
+Be aware that, if a graph is found with different arguments to those passed, the new arguments are ignored. If parameters of the graph change, add them manually after the call to C<create_graph>.
+
+=cut
+
+sub create_graph {
+	state $paramscheck = compile (ArrayRef, slurpy Dict);
+	my ($coll, $args) = $paramscheck->(@_);
+
+	if (!defined $args->{graph_title} ) {
 		die ("Invalid call to create_args(): Missing attribute 'graph_title'");
 	}
 
-	my $graph = new Munin::Plugin::Graph::MultiGraph(%args);
+	my $graph = new Munin::Plugin::Graph::MultiGraph(%{$args});
 	my $other;
 
 	if ( defined( $other = find_graph_by_title( $coll, $graph->graph_title))) {
@@ -161,14 +245,21 @@ sub create_graph {
 	}
 }
 
-sub create_subgraph {
-	my ($graph, %args) = @_;
+=item C<create_subgraph>
 
-    if ( !defined $args{graph_title} ) {
+Given a reference to a C<Munin::Plugin::Graph>, finds or adds a subgraph to it. See L<create_graph> for details.
+
+=cut
+
+sub create_subgraph {
+	state $paramscheck = compile (ArrayRef, slurpy Dict);
+	my ($graph, $args) = $paramscheck->(@_);
+
+    if ( !defined $args->{graph_title} ) {
         die( "Invalid call to create_subgraph(): Missing attribute 'graph_title'") ;
     }
 
-    my $subgraph = new Munin::Plugin::Graph::Graph(%args);
+    my $subgraph = Munin::Plugin::Graph::Graph->new(%{$args});
     my $other;
 
     if ( defined( $other = find_subgraph_by_title( $graph, $subgraph->graph_title ) ) ) {
@@ -180,14 +271,21 @@ sub create_subgraph {
     }
 }
 
-sub create_ds {
-    my ( $g, %args ) = (@_);
+=item C<create_ds>
 
-    if ( !defined $args{fieldname} ) {
+Given a reference to a C<Munin::Plugin::Graph> (or subgraph), find or create the specified C<Munin::Plugin::Graph::DS>.
+
+=cut
+
+sub create_ds {
+	state $paramscheck = compile (InstanceOf["Munin::Plugin::Graph::BaseGraph"], slurpy Dict);
+    my ( $g, $args ) = $paramscheck->(@_);
+
+    if ( !defined $args->{fieldname} ) {
         die "Invalid call to create_ds: Missing attribute 'fieldname'" ;
     }
 
-    my $ds = new Munin::Plugin::Graph::DS(%args);
+    my $ds = Munin::Plugin::Graph::DS->new(%{$args});
     my $other;
 
     if ( defined( $other = $g->get_DS_by_name( $ds->fieldname ) ) ) {
@@ -198,6 +296,10 @@ sub create_ds {
         return $ds;
     }
 }
+
+=back
+
+=cut
 
 1;
 

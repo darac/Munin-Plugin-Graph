@@ -336,7 +336,8 @@ sub add_DS {
                 die "Cannot add DS $item. Fieldnames must be unique";
             }
             else {
-                my $added = new Munin::Plugin::Graph::DS( fieldname => $item );
+                my $added = Munin::Plugin::Graph::DS->new( fieldname => $item );
+            	DS->assert_valid($added);
                 if ( $self->has_data_sources ) {
                     push @{ $self->data_sources }, $added;
                 }
@@ -433,6 +434,10 @@ sub expire {
 
 	return 1;
 }
+
+=item C<DEMOLISH>
+
+Destructor. Not to be called manually.
 
 =back
 

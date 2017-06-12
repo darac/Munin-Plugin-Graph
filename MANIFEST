@@ -1,7 +1,14 @@
+.perlcriticrc
+.perltidyrc
+.travis.yml
 Build.PL
 Changes
-MANIFEST			This list of files
+MANIFEST
+META.json
+META.yml
+Makefile.PL
 README.md
+dist.ini
 lib/Munin/Plugin/Graph.pm
 lib/Munin/Plugin/Graph/BaseGraph.pm
 lib/Munin/Plugin/Graph/DS.pm
@@ -15,13 +22,13 @@ t/12-graph-excercise-values.t
 t/20-data-source-defaults.t
 t/21-data-source-set-values.t
 t/22-data-source-exercise-values.t
+t/23-data-source-aging.t
 t/30-graph-with-data-source.t
 t/40-multigraph.t
+t/50-dirtyconfig.t
 t/90-serialise-deserialise.t
 t/manifest.t
 t/pod-coverage.t
 t/pod.t
+t/test-plan.txt
 xt/boilerplate.t
-Makefile.PL
-META.yml
-META.json

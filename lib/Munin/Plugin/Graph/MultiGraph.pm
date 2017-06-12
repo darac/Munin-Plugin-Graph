@@ -57,7 +57,7 @@ sub add_graph {
         if ( Str->check($item) ) {
 
             # Argument is a string. Start by seeing if we can find an existing graph by that name
-            my $newgraph = new Munin::Plugin::Graph::Graph( graph_title => $item );
+            my $newgraph = Munin::Plugin::Graph::Graph->new( graph_title => $item );
             ( my $altname = lc $item ) =~ s/[^a-zA-Z0-9]/_/g;
             if ( defined( my $checkname = $self->get_graph_by_name( $newgraph->name ) ) ) {
 
