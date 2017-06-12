@@ -8,7 +8,7 @@ eval 'use Test::More::Color';
 use DateTime;
 use Time::HiRes qw(usleep);
 
-plan tests => 15;
+plan tests => 17;
 
 require_ok('Munin::Plugin::Graph');
 
@@ -21,24 +21,37 @@ is( $ds->last_update, DateTime->from_epoch( epoch => 0, time_zone => 'UTC' ), "D
 
 # Note the time
 my $start = DateTime->now;
-usleep(50);
+usleep(1_000_000);
 
 # Update the DS
 $ds->value(23);
 
-usleep(50);
+usleep(1_000_000);
 
 # Note the time
 my $end = DateTime->now;
+usleep(1_000_000);
 
 # Check that the DS timestamp was updated correctly
 cmp_ok( $ds->last_update, '>=', $start ) and cmp_ok( $ds->last_update, '<=', $end );
 
 # Check that updating some other aspect doesn't affect the timestamp
 my $lut = $ds->last_update;
+usleep(1_000_000);
 $ds->info("blah");
 
 is( $ds->last_update, $lut, "Updating info doesn't change LUT" );
+
+# Check that READING the value doesn't affect the timestamp
+my $nothing = $ds->value();
+usleep(1_000_000);
+
+is( $ds->last_update, $lut, "Reading the value doesn't change LUT" );
+
+$ds->value('U');
+usleep(1_000_000);
+
+is( $ds->last_update, $lut, "Setting value to 'U' doesn't change LUT" );
 
 
 # To Check expiry, add the DS to a graph
@@ -55,12 +68,12 @@ ok( $g->expire, "Can actually expire" );  # Expires anything two weeks old (Why 
 is( $retr = $g->get_DS_by_name($ds_name), $ds, "Item hasn't expired" );
 
 # Now set the timestamp back two weeks
-$ds->_set_last_update( $ds->last_update->subtract( weeks => 2 ) );
+$ds->_set_last_update( DateTime->now()->subtract( weeks => 2 ) );
 
 # Show the time has gone back
 is( $ds->last_update, DateTime->now()->subtract( weeks => 2 ), "LUT has gone back" );
 
-usleep(50);
+usleep(1_000_000);
 
 ok( $g->expire );
 
