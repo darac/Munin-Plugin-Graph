@@ -19,11 +19,11 @@ Munin::Plugin::Graph - The great new Munin::Plugin::Graph!
 
 =head1 VERSION
 
-Version 0.05
+Version 0.20
 
 =cut
 
-our $VERSION = '0.10';
+our $VERSION = '0.20';
 
 =head1 SYNOPSIS
 
